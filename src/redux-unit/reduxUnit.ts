@@ -43,7 +43,7 @@ export const reduxUnit = <S extends object>(initial: S, typePrefix?: string) => 
     if (isApiHandler(handler)) {
       const actions = getActionTypes(key, typePrefix);
       acc[actions.success] = handler.success;
-      if (handler.request && actions.request) acc[actions.request] = handler.request;
+      acc[actions.request] = handler.request;
       if (handler.reset && actions.reset) acc[actions.reset] = handler.reset;
       if (handler.failure && actions.failure) acc[actions.failure] = handler.failure;
     } else {

@@ -21,7 +21,7 @@ const { creators, reducer } = unit({
 
 ###
 
-Use `npm run dev` to start a development server(on port 3000), `npm run build` to build the project.
+Use `npm run dev` to start the development server(on port 3000), `npm run build` to build the project.
 
 ### Source
 
