@@ -1,11 +1,15 @@
-import { GenericHandler, ApiHandler } from '../index';
+import { GenericHandler, ApiHandler, GetReturnArgs } from '../index';
 
-import { initialCommunication } from './communication';
+import { initialCommunication, Communication } from './communication';
+
+type SubType<Base, Condition> = Pick<Base, {
+  [Key in keyof Base]: Base[Key] extends Condition ? Key : never
+}[keyof Base]>;
 
 export function apiHandler
-  <S extends object, T extends keyof S, H extends GenericHandler<S>>
-  ({ communication, onSuccess }: { communication: T, onSuccess: H}):
-  ApiHandler<S, [], Parameters<ReturnType<H>>, [string], []> {
+  <S extends object, H extends GenericHandler<S>>
+  ({ communication, onSuccess }: { communication: keyof SubType<S, Communication>, onSuccess: H }):
+  ApiHandler<S, [], GetReturnArgs<H>, [string], []> {
   return {
     type: 'api',
     request: (state) => () => ({ ...state, [communication]: { ...state[communication], isFetching: true } }),

@@ -7,7 +7,7 @@ type ApiActionsMap<T = string> = {
   failure?: T;
   reset?: T;
 }
-export type GenericApiHandler<S> = ApiActionsMap<GenericHandler<S>> & { type?: 'api' };
+export type GenericApiHandler<S> = ApiActionsMap<GenericHandler<S>> & { type: 'api' };
 type ResolveUndefined<T> = T extends AnyFunction ? T : (...args: never) => never;
 
 export type ApiActionCreator<S, M extends GenericApiHandler<S>> =

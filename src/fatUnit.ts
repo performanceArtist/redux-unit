@@ -1,16 +1,28 @@
-import { reduxUnit, Handler, ApiHandler } from './redux-unit';
-import { initialCommunication } from './redux-unit/helpers';
+import { reduxUnit, ApiHandler, GetReturnArgs } from './redux-unit';
+import { initialCommunication, apiHandler } from './redux-unit/helpers';
 
 import { initialState, InitialState } from './initial';
 
 const unit = reduxUnit(initialState, 'TEST');
 
-const kokoko: Handler<InitialState, [number]> = (state) => (l: number) => state;
-const someApi: ApiHandler<InitialState, [], [number[]]> = {
+const kokoko = (state: InitialState) => (l: number) => state;
+const onRequest = (state: InitialState) => () => state;
+const onSuccess = (state: InitialState) => (f: string) => state;
+const someApi: ApiHandler<InitialState, GetReturnArgs<typeof onRequest>, GetReturnArgs<typeof onSuccess>> = {
   type: 'api',
-  request: (state) => () => state,
-  success: (state) => (stuff: number[]) => state,
+  request: onRequest,
+  success: onSuccess,
 };
+
+const onGetSuccess = (state: InitialState) => (j: number) => state;
+const bunch = {
+  tt: (state: InitialState) => (a: number) => state,
+  bb: (state: InitialState) => (j: string) => state,
+  comm: apiHandler<InitialState, typeof onGetSuccess>({
+    communication: 'getTodo',
+    onSuccess: onGetSuccess
+  })
+}
 
 const { creators, reducer } = unit({
   addMessage: (state) => (todo: string) => ({ ...state, messages: state.todos.concat(todo) }),
@@ -31,10 +43,12 @@ const { creators, reducer } = unit({
     reset: (state) => () => ({ ...state, getMessage: initialCommunication })
   },
   kokoko,
-  someApi
+  someApi,
+  ...bunch
 });
 
 creators.kokoko(54);
-creators.someApi.success([1,2,3]);
-
+creators.someApi.success('');
+creators.comm.success(5);
+creators.someApi.success('fd');
 export { creators as testCreators, reducer as testReducer };
