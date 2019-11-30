@@ -3,7 +3,7 @@ import { initialCommunication, apiHandler, GetReturnArgs } from './redux-unit/he
 
 import { initialState, InitialState } from './initial';
 
-const unit = reduxUnit(initialState, 'TEST');
+const unit = reduxUnit(initialState, { typePrefix: 'TEST' });
 
 const kokoko = (state: InitialState) => (l: number) => state;
 const onRequest = (state: InitialState) => () => state;

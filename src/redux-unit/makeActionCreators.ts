@@ -1,18 +1,18 @@
 import { HandlerMap, ActionCreators } from './types';
-import { isApiHandler, getActionCreators } from './api';
-import { defaultTypeCreator } from './typeFormatter';
+import { TypeFormatter } from './makeTypeFormatter';
+import { isApiHandler, getApiActionCreators } from './api';
 
 function makeActionCreators
   <S extends object, M extends HandlerMap<S>>
-  (model: M, typePrefix?: string): ActionCreators<S, M> {
+  (model: M, typeFormatter: TypeFormatter): ActionCreators<S, M> {
   return Object.keys(model).reduce(
     (acc, key) => {
       const handler = model[key];
       if (isApiHandler(handler)) {
-        acc[key] = getActionCreators(key, typePrefix);
+        acc[key] = getApiActionCreators(key, typeFormatter);
       } else {
         acc[key] = (...args: any) => ({
-          type: defaultTypeCreator(key, typePrefix),
+          type: typeFormatter(key),
           payload: args
         });
       }

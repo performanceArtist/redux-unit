@@ -1,10 +1,11 @@
 import { Action, HandlerMap } from './types';
 import makeHandlerMap from './makeHandlerMap';
+import { TypeFormatter } from './makeTypeFormatter';
 
 function makeAnyReducer
   <S extends object, M extends HandlerMap<S>>
-  (model: M, initialState: S, typePrefix?: string) {
-  const handlerMap = makeHandlerMap(model, typePrefix);
+  (model: M, initialState: S, typeFormatter: TypeFormatter) {
+  const handlerMap = makeHandlerMap(model, typeFormatter);
 
   return (state = initialState, action: Action<any>) => {
     const handler = handlerMap[action.type];

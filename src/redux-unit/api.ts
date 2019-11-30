@@ -1,5 +1,5 @@
-import { defaultTypeCreator } from './typeFormatter';
 import { Action, AnyFunction, GenericHandler, GetReturnArgs, Handler } from './types';
+import { TypeFormatter } from './makeTypeFormatter';
 
 type ApiActionsMap<T = string> = {
   request: T;
@@ -34,19 +34,17 @@ export type ApiHandler<
   reset?: Handler<S, RS>;
 } & { type: 'api' }
 
-export function getActionTypes(key: string, prefix?: string, separator = '.'): ApiActionsMap<string> {
-  const baseType = defaultTypeCreator(key, prefix);
-
+export function getApiActionTypes(key: string, typeFormatter: TypeFormatter): ApiActionsMap<string> {
   return {
-    request: `${baseType}${separator}REQUEST`,
-    success: `${baseType}${separator}SUCCESS`,
-    failure: `${baseType}${separator}FAILURE`,
-    reset: `${baseType}${separator}RESET`
+    request: typeFormatter(`${key}Request`),
+    success: typeFormatter(`${key}Success`),
+    failure: typeFormatter(`${key}Failure`),
+    reset: typeFormatter(`${key}Reset`)
   };
 }
 
-export function getActionCreators(key: string, prefix?: string, separator = '.') {
-  const { request, success, failure, reset } = getActionTypes(key, prefix, separator);
+export function getApiActionCreators(key: string, typeFormatter: TypeFormatter) {
+  const { request, success, failure, reset } = getApiActionTypes(key, typeFormatter);
 
   return {
     request: (...args: any) => ({ type: request, payload: args }),
