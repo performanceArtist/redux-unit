@@ -1,4 +1,5 @@
-import { GenericHandler, ApiHandler, GetReturnArgs } from '../index';
+import { GenericHandler, ApiHandler } from '../index';
+import { GetReturnArgs } from '../types';
 
 import { initialCommunication, Communication } from './communication';
 
@@ -18,3 +19,4 @@ export function apiHandler
     reset: (state) => () => ({ ...state, [communication]: initialCommunication })
   };
 }
+
