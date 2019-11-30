@@ -6,7 +6,11 @@ Utility for action creators + reducer generation.
 
 ```ts
 // unit.ts
-const unit = reduxUnit(initialState, 'TODO');
+const unit = reduxUnit(initialState, {
+  typePrefix: 'TODO',
+  prefixSeparator: ':',
+  separator: '-'
+});
 
 const { creators, reducer } = unit({
   add: (state) => (todo: string) => ({ ...state, todos: state.todos.concat(todo) }),

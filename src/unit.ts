@@ -10,7 +10,7 @@ const unit = reduxUnit(initialState, {
 });
 
 const { creators, reducer } = unit({
-  addStuffYeah: (state) => (todo: string) => ({ ...state, todos: state.todos.concat(todo) }),
+  add: (state) => (todo: string) => ({ ...state, todos: state.todos.concat(todo) }),
   getTodo: apiHandler({
     communication: 'getTodo',
     onSuccess: (state) => (todos: string[]) => ({ ...state, todos })
