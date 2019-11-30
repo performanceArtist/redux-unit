@@ -14,9 +14,8 @@ export function apiHandler
   return {
     type: 'api',
     request: (state) => () => ({ ...state, [communication]: { ...state[communication], isFetching: true } }),
-    success: onSuccess,
+    success: (state) => (...args) => ({ ...onSuccess(state)(args), [communication]: { isFetching: false } }),
     failure: (state) => (error: string) => ({ ...state, [communication]: { ...state[communication], error, isFetching: false }}),
     reset: (state) => () => ({ ...state, [communication]: initialCommunication })
   };
 }
-
