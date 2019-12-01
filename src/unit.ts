@@ -14,7 +14,7 @@ const { creators, reducer } = unit({
   getTodo: apiHandler({
     communication: 'getTodo',
     onRequest: (state) => (filter: Date) => state,
-    onSuccess: (state) => (todos: string[]) => ({ ...state, todos })
+    onSuccess: (state) => (todos: string[]) => ({ ...state, todos }),
   })
 });
 
