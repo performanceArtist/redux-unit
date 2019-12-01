@@ -13,6 +13,7 @@ const { creators, reducer } = unit({
   add: (state) => (todo: string) => ({ ...state, todos: state.todos.concat(todo) }),
   getTodo: apiHandler({
     communication: 'getTodo',
+    onRequest: (state) => (filter: Date) => state,
     onSuccess: (state) => (todos: string[]) => ({ ...state, todos })
   })
 });

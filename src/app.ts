@@ -2,7 +2,7 @@ import { todoCreators } from './unit';
 import store from './store';
 
 const add = todoCreators.add('Test');
-const getRequest = todoCreators.getTodo.request();
+const getRequest = todoCreators.getTodo.request(new Date());
 const getSuccess = todoCreators.getTodo.success(['Todo1', 'Todo2']);
 const getFailure = todoCreators.getTodo.failure('Error');
 const getReset = todoCreators.getTodo.reset();
