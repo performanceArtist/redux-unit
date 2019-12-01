@@ -12,6 +12,7 @@ type ResolveUndefined<T> = T extends AnyFunction ? T : (...args: never) => never
 
 export type ApiActionCreator<S, M extends GenericApiHandler<S>> =
   {
+    getType: (key: keyof ApiActionsMap) => string,
     request: (...args: GetReturnArgs<M['request']>) =>
       Action<GetReturnArgs<M['request']>>,
     success: (...args: GetReturnArgs<M['success']>) => Action<GetReturnArgs<M['success']>>,
@@ -44,9 +45,11 @@ export function getApiActionTypes(key: string, typeFormatter: TypeFormatter): Ap
 }
 
 export function getApiActionCreators(key: string, typeFormatter: TypeFormatter) {
-  const { request, success, failure, reset } = getApiActionTypes(key, typeFormatter);
+  const types = getApiActionTypes(key, typeFormatter);
+  const { request, success, failure, reset } = types;
 
   return {
+    getType: (key: keyof ApiActionsMap) => types[key] as string,
     request: (...args: any) => ({ type: request, payload: args }),
     success: (...args: any) => ({ type: success, payload: args }),
     failure: (...args: any) => ({ type: failure, payload: args }),

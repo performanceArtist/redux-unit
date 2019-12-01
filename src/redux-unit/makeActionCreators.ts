@@ -1,4 +1,4 @@
-import { HandlerMap, ActionCreators } from './types';
+import { HandlerMap, ActionCreators, PlainActionCreator } from './types';
 import { TypeFormatter } from './makeTypeFormatter';
 import { isApiHandler, getApiActionCreators } from './api';
 
@@ -11,10 +11,13 @@ function makeActionCreators
       if (isApiHandler(handler)) {
         acc[key] = getApiActionCreators(key, typeFormatter);
       } else {
-        acc[key] = (...args: any) => ({
+        const creator = ((...args: any) => ({
           type: typeFormatter(key),
           payload: args
-        });
+        })) as PlainActionCreator<any>;
+        creator.getType = () => typeFormatter(key);
+
+        acc[key] = creator;
       }
 
       return acc;

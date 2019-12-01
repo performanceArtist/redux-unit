@@ -7,6 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettify": "prettier --write src/**/*.{ts,tsx,js,jsx,css,scss,json}",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src",
+    "check-types": "tsc -p . --noEmit",
+    "check-types:watch": "tsc -p . --noEmit -w",
     "eslint": "eslint",
     "dev": "webpack-dev-server --hot --mode=development --config webpack.config.dev.ts",
     "build": "webpack --mode=production --config webpack.config.prod.ts"
