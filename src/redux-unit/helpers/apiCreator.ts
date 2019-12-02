@@ -33,26 +33,26 @@ export function apiHandler
       const newCommunication = { [communication]: { ...state[communication], isFetching: true } };
 
       return onRequest
-      ? { ...onRequest(state)(args), ...newCommunication }
+      ? { ...onRequest(state).apply(null, args), ...newCommunication }
       : { ...state, ...newCommunication };
     },
     success: (state) => (...args) => {
       const newCommunication = { [communication]: { isFetching: false } };
 
       return onSuccess
-      ? { ...onSuccess(state)(args), ...newCommunication }
+      ? { ...onSuccess(state).apply(null, args), ...newCommunication }
       : { ...state, ...newCommunication };
     },
     failure: (state) => (...args) => {
       const newCommunication = { [communication]: { ...state[communication], error: args, isFetching: false }};
 
       return onFailure
-      ? { ...onFailure(state)(args), ...newCommunication }
+      ? { ...onFailure(state).apply(null, args), ...newCommunication }
       : { ...state, ...newCommunication }
     },
     reset: (state) => (...args) => {
       return onReset
-      ? ({ ...onReset(state)(args), [communication]: initialCommunication })
+      ? ({ ...onReset(state).apply(null, args), [communication]: initialCommunication })
       : ({ ...state, [communication]: initialCommunication })
     }
   };
