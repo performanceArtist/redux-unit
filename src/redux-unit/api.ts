@@ -8,7 +8,7 @@ type ApiActionsMap<T = string> = {
   reset?: T;
 }
 export type GenericApiHandler<S> = ApiActionsMap<GenericHandler<S>> & { type?: 'api' };
-type ResolveUndefined<T> = T extends AnyFunction ? T : (...args: never) => never;
+type ResolveUndefined<T> = T extends AnyFunction ? T : () => never;
 
 export type ApiActionCreator<S, M extends GenericApiHandler<S>> =
   {
@@ -27,7 +27,7 @@ export type ApiHandler<
   R extends unknown[] = unknown[],
   SC extends unknown[] = unknown[],
   F extends unknown[] = unknown[],
-  RS extends unknown[] = unknown[]
+  RS extends unknown[] = never
 > = {
   request: Handler<S, R>;
   success: Handler<S, SC>;

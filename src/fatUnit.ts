@@ -50,5 +50,6 @@ const { creators, reducer } = unit({
 creators.kokoko(54);
 creators.someApi.success('');
 creators.comm.success(5);
+creators.comm.reset();
 creators.someApi.success('fd');
 export { creators as testCreators, reducer as testReducer };

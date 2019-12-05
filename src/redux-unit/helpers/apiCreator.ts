@@ -1,5 +1,5 @@
 import { GenericHandler, ApiHandler } from '../index';
-import { GetReturnArgs } from '../types';
+import { GetReturnArgs, NoArgsHandler } from '../types';
 
 import { initialCommunication, Communication } from './communication';
 
@@ -9,15 +9,15 @@ type SubType<Base, Condition> = Pick<Base, {
 
 type GetOptionalArgs<S, R> = R extends GenericHandler<S>
   ? GetReturnArgs<R>
-  : [];
+  : never;
 
 export function apiHandler
   <
     S extends object,
-    SC extends GenericHandler<S> = GenericHandler<S>,
-    RQ extends GenericHandler<S> = GenericHandler<S>,
+    SC extends GenericHandler<S> = NoArgsHandler<S>,
+    RQ extends GenericHandler<S> = NoArgsHandler<S>,
     F extends GenericHandler<S> = (state: S) => (error: any) => S,
-    RS extends GenericHandler<S> = GenericHandler<S>,
+    RS extends GenericHandler<S> = NoArgsHandler<S>,
   >
   ({
     communication,
