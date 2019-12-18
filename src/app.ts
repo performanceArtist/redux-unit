@@ -1,14 +1,14 @@
-import { todoCreators } from './unit';
+import { todoActions } from './unit';
 import store from './store';
 
-const add = todoCreators.add('Test');
-const getRequest = todoCreators.getTodo.request(new Date());
-const getSuccess = todoCreators.getTodo.success(['Todo1', 'Todo2']);
-const getFailure = todoCreators.getTodo.failure('Error');
-const getReset = todoCreators.getTodo.reset();
+const add = todoActions.add('Test');
+const getRequest = todoActions.getTodo.request(new Date());
+const getSuccess = todoActions.getTodo.success(['Todo1', 'Todo2']);
+const getFailure = todoActions.getTodo.failure('Error');
+const getReset = todoActions.getTodo.reset();
 
-const plainType = todoCreators.add.getType();
-const requestType = todoCreators.getTodo.getType('request');
+const plainType = todoActions.add.getType();
+const requestType = todoActions.getTodo.getType('request');
 console.log('Raw types:', plainType, requestType);
 
 store.dispatch(add);

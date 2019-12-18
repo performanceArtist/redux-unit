@@ -2,7 +2,10 @@ import { HandlerMap, FlatHandlerMap } from './types';
 import { isApiHandler, getApiActionTypes } from './api';
 import { TypeFormatter } from './makeTypeFormatter';
 
-function makeHandlerMap<S extends object, M extends HandlerMap<S>>(model: M, typeFormatter: TypeFormatter) {
+function makeHandlerMap<S extends object, M extends HandlerMap<S>>(
+  model: M,
+  typeFormatter: TypeFormatter,
+) {
   return Object.keys(model).reduce<FlatHandlerMap<S>>((acc, key) => {
     const handler = model[key];
 
@@ -21,4 +24,4 @@ function makeHandlerMap<S extends object, M extends HandlerMap<S>>(model: M, typ
   }, {});
 }
 
-export default makeHandlerMap;
+export { makeHandlerMap };

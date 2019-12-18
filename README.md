@@ -12,12 +12,12 @@ const unit = reduxUnit(initialState, {
   separator: '-'
 });
 
-const { creators, reducer } = unit({
+const { actions, reducer } = unit({
   add: (state) => (todo: string) => ({ ...state, todos: state.todos.concat(todo) }),
-  getTodo: apiHandler({
+  getTodo: makeApiHandler<Date>()({
     communication: 'getTodo',
-    onSuccess: (state) => (todos: string[]) => ({ ...state, todos })
-  })
+    onSuccess: (state) => (todos: string[]) => ({ ...state, todos }),
+  }),
 });
 ```
 

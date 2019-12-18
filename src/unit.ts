@@ -1,21 +1,20 @@
 import { reduxUnit } from './redux-unit';
-import { apiHandler } from './redux-unit/helpers';
+import { makeApiHandler } from './redux-unit/helpers';
 
 import { initialState } from './initial';
 
 const unit = reduxUnit(initialState, {
   typePrefix: 'TODO',
   prefixSeparator: ':',
-  separator: '-'
+  separator: '-',
 });
 
-const { creators, reducer } = unit({
+const { actions, reducer } = unit({
   add: (state) => (todo: string) => ({ ...state, todos: state.todos.concat(todo) }),
-  getTodo: apiHandler({
+  getTodo: makeApiHandler<Date>()({
     communication: 'getTodo',
-    onRequest: (state) => (filter: Date) => state,
     onSuccess: (state) => (todos: string[]) => ({ ...state, todos }),
-  })
+  }),
 });
 
-export { creators as todoCreators, reducer as todoReducer };
+export { actions as todoActions, reducer as todoReducer };

@@ -7,5 +7,5 @@ export type InitialState = {
 
 export const initialState: InitialState = {
   todos: [],
-  getTodo: initialCommunication
+  getTodo: initialCommunication,
 };
