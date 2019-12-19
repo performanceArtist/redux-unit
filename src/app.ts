@@ -16,3 +16,6 @@ store.dispatch(getRequest);
 store.dispatch(getSuccess);
 store.dispatch(getFailure);
 store.dispatch(getReset);
+
+const dispatchers = todoActions.getTodo.mapDispatch(store.dispatch);
+dispatchers.request(new Date());

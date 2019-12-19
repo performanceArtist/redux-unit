@@ -1,3 +1,5 @@
+import { Dispatch } from 'redux';
+
 import {
   Action, AnyFunction, GenericHandler, GetReturnArgs, Handler,
 } from './types';
@@ -15,6 +17,7 @@ type ResolveUndefined<T> = T extends AnyFunction ? T : () => never;
 export type ApiActionCreator<S, M extends GenericApiHandler<S>> =
   {
     getType: (key: keyof ApiActionsMap) => string,
+    mapDispatch: (dispatch: Dispatch<any>) => Omit<ApiActionCreator<S, M>, 'mapDispatch'>,
     request: (...args: GetReturnArgs<M['request']>) =>
     Action<GetReturnArgs<M['request']>>,
     success: (...args: GetReturnArgs<M['success']>) => Action<GetReturnArgs<M['success']>>,
@@ -53,14 +56,24 @@ export function getApiActionCreators(key: string, typeFormatter: TypeFormatter) 
   const {
     request, success, failure, reset,
   } = types;
-
-  return {
+  const getActions = (dispatch?: Dispatch) => ({
     getType: (actionType: keyof ApiActionsMap) => types[actionType] as string,
-    request: (...payload: any) => ({ type: request, payload }),
-    success: (...payload: any) => ({ type: success, payload }),
-    failure: (...payload: any) => ({ type: failure, payload }),
-    reset: (...payload: any) => ({ type: reset, payload }),
-  };
+    mapDispatch: dispatch ? undefined : (reduxDispatch: Dispatch) => getActions(reduxDispatch),
+    request: (...payload: any) => (dispatch
+      ? dispatch({ type: request, payload })
+      : { type: request, payload }),
+    success: (...payload: any) => (dispatch
+      ? dispatch({ type: success, payload })
+      : { type: success, payload }),
+    failure: (...payload: any) => (dispatch
+      ? dispatch({ type: failure, payload })
+      : { type: failure, payload }),
+    reset: (...payload: any) => (dispatch
+      ? dispatch({ type: reset, payload })
+      : { type: reset, payload }),
+  });
+
+  return getActions();
 }
 
 export const isApiHandler = (handler: GenericApiHandler<any> | GenericHandler<any>):
