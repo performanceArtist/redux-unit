@@ -9,14 +9,14 @@ Utility for action creators + reducer generation.
 const unit = reduxUnit(initialState, {
   typePrefix: 'TODO',
   prefixSeparator: ':',
-  separator: '-'
+  separator: '-',
 });
 
 const { actions, reducer } = unit({
-  add: (state) => (todo: string) => ({ ...state, todos: state.todos.concat(todo) }),
-  getTodo: makeApiHandler<Date>()({
+  add: (state, todo: string) => ({ ...state, todos: state.todos.concat(todo) }),
+  getTodo: makeCommunicationHandler<Date>()({
     communication: 'getTodo',
-    onSuccess: (state) => (todos: string[]) => ({ ...state, todos }),
+    onSuccess: (state, todos: string[]) => ({ ...state, todos }),
   }),
 });
 ```
