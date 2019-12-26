@@ -1,21 +1,21 @@
 import { reduxUnit } from './redux-unit';
-import { makeApiHandler } from './redux-unit/helpers';
+import { makeCommunicationHandler } from './redux-unit/helpers';
 
 import { initialState, InitialState } from './initial';
 
 const unit = reduxUnit(initialState, { typePrefix: 'TEST' });
 
-const kokoko = (state: InitialState) => (l: number) => state;
+const kokoko = (state: InitialState, l: number) => state;
 const bunch = {
-  tt: (state: InitialState) => (a: number) => state,
-  bb: (state: InitialState) => (j: string) => state,
+  tt: (state: InitialState, a: number) => state,
+  bb: (state: InitialState, j: string) => state,
 };
-const onGetSuccess = (state: InitialState) => (j: number) => state;
+const onGetSuccess = (state: InitialState, j: number) => state;
 
 const { actions, reducer } = unit({
-  addMessage: (state) => (todo: string) => ({ ...state, messages: state.todos.concat(todo) }),
+  addMessage: (state, todo: string) => ({ ...state, messages: state.todos.concat(todo) }),
   kokoko,
-  comm: makeApiHandler()({
+  comm: makeCommunicationHandler()({
     communication: 'getTodo',
     onSuccess: onGetSuccess,
   }),

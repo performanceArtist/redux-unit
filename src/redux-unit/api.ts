@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux';
 
 import {
-  Action, AnyFunction, GenericHandler, GetReturnArgs, Handler,
+  Action, GenericHandler, GetActionArgs, Handler,
 } from './types';
 import { TypeFormatter } from './makeTypeFormatter';
 
@@ -12,19 +12,19 @@ type ApiActionsMap<T = string> = {
   reset?: T;
 };
 export type GenericApiHandler<S> = ApiActionsMap<GenericHandler<S>> & { type?: 'api' };
-type ResolveUndefined<T> = T extends AnyFunction ? T : () => never;
+type ResolveUndefined<T> = T extends Function ? T : never;
 
 export type ApiActionCreator<S, M extends GenericApiHandler<S>> =
   {
     getType: (key: keyof ApiActionsMap) => string,
     mapDispatch: (dispatch: Dispatch<any>) => Omit<ApiActionCreator<S, M>, 'mapDispatch'>,
-    request: (...args: GetReturnArgs<M['request']>) =>
-    Action<GetReturnArgs<M['request']>>,
-    success: (...args: GetReturnArgs<M['success']>) => Action<GetReturnArgs<M['success']>>,
-    failure: (...args: GetReturnArgs<ResolveUndefined<M['failure']>>) =>
-    Action<GetReturnArgs<ResolveUndefined<M['failure']>>>,
-    reset: (...args: GetReturnArgs<ResolveUndefined<M['reset']>>) =>
-    Action<GetReturnArgs<ResolveUndefined<M['reset']>>>,
+    request: (...args: GetActionArgs<M['request']>) =>
+    Action<GetActionArgs<M['request']>>,
+    success: (...args: GetActionArgs<M['success']>) => Action<GetActionArgs<M['success']>>,
+    failure: (...args: GetActionArgs<ResolveUndefined<M['failure']>>) =>
+    Action<GetActionArgs<ResolveUndefined<M['failure']>>>,
+    reset: (...args: GetActionArgs<ResolveUndefined<M['reset']>>) =>
+    Action<GetActionArgs<ResolveUndefined<M['reset']>>>,
   };
 
 export type ApiHandler<
@@ -32,7 +32,7 @@ export type ApiHandler<
   R extends unknown[] = unknown[],
   SC extends unknown[] = unknown[],
   F extends unknown[] = unknown[],
-  RS extends unknown[] = never
+  RS extends unknown[] = unknown[],
 > = {
   request: Handler<S, R>;
   success: Handler<S, SC>;

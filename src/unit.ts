@@ -1,5 +1,5 @@
 import { reduxUnit } from './redux-unit';
-import { makeApiHandler } from './redux-unit/helpers';
+import { makeCommunicationHandler } from './redux-unit/helpers';
 
 import { initialState } from './initial';
 
@@ -10,10 +10,10 @@ const unit = reduxUnit(initialState, {
 });
 
 const { actions, reducer } = unit({
-  add: (state) => (todo: string) => ({ ...state, todos: state.todos.concat(todo) }),
-  getTodo: makeApiHandler<Date>()({
+  add: (state, todo: string) => ({ ...state, todos: state.todos.concat(todo) }),
+  getTodo: makeCommunicationHandler<Date>()({
     communication: 'getTodo',
-    onSuccess: (state) => (todos: string[]) => ({ ...state, todos }),
+    onSuccess: (state, todos: string[]) => ({ ...state, todos }),
   }),
 });
 

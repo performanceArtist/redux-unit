@@ -1,8 +1,8 @@
 export type Communication = {
-  isFetching: boolean;
+  isRequesting: boolean;
   error?: string
 };
 
 export const initialCommunication: Communication = {
-  isFetching: false,
+  isRequesting: false,
 };

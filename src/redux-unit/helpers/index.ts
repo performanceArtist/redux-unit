@@ -1,3 +1,3 @@
-export { makeApiHandler } from './apiCreator';
-export { GetReturnArgs } from '../types';
+export { makeCommunicationHandler } from './makeCommunicationHandler';
+export { GetActionArgs } from '../types';
 export * from './communication';

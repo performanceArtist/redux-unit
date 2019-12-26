@@ -13,7 +13,7 @@ function makeAnyReducer<S extends object, M extends HandlerMap<S>>(
     const handler = handlerMap[action.type];
 
     if (handler) {
-      return handler(state)(...action.payload);
+      return handler(state, ...action.payload);
     }
 
     return state;
