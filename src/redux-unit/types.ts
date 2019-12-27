@@ -1,17 +1,24 @@
 import { ApiActionCreator, ApiHandler } from './api';
 
+export type PlainAction = {
+  type: string,
+  payload: never
+};
 export type Action<P> = {
   type: string;
-  payload: P;
+  payload: P extends [any] ? P[0] : P;
 };
-export type GetActionArgs<T> = T extends (state: any, ...rest: infer A) => any ? A : never;
+export type AnyAction<P> = P extends [] ? PlainAction : Action<P>;
+export type GetActionArgs<T, F = []> = T extends (state: any, ...rest: infer A) => any
+  ? A extends [never] ? F : A
+  : never;
 export type GenericHandler<S> = (state: S, ...args: unknown[]) => S;
 export type NoArgsHandler<S> = (state: S) => S;
 export type Handler<S, A extends unknown[]> = (state: S, ...args: A) => S;
 export type HandlerMap<S> = { [key: string]: GenericHandler<S> | ApiHandler<S> };
 export type FlatHandlerMap<S> = { [key: string]: GenericHandler<S> };
 export type PlainActionCreator<A extends unknown[]> = {
-  (...args: A): Action<A>,
+  (...args: A): AnyAction<A>,
   getType: () => string
 };
 export type SelectHandlerType<S, M extends HandlerMap<S>, T extends keyof M> =

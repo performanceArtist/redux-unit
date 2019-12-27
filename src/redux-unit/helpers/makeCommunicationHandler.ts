@@ -1,4 +1,4 @@
-import { GenericHandler, ApiHandler } from '../index';
+import { ApiHandler } from '../index';
 import { GetActionArgs } from '../types';
 import { initialCommunication, Communication } from './communication';
 
@@ -6,13 +6,15 @@ type SubType<Base, Condition> = Pick<Base, {
   [Key in keyof Base]: Base[Key] extends Condition ? Key : never
 }[keyof Base]>;
 
+type FixedHandler<S extends object> = (state: S, payload: never) => S;
+
 export function makeCommunicationHandler<Params = []>() {
   return function requestCommunicationHandler
   <
     S extends object,
-    SC extends GenericHandler<S>,
-    F extends GenericHandler<S>,
-    RS extends GenericHandler<S>,
+    SC extends FixedHandler<S>,
+    F extends FixedHandler<S>,
+    RS extends FixedHandler<S>,
   >
   ({
     communication,
@@ -25,13 +27,13 @@ export function makeCommunicationHandler<Params = []>() {
     onFailure?: F,
     onReset?: RS
   }):
-    ApiHandler<
+  ApiHandler<
     S,
     Params extends unknown[] ? Params : [Params],
     GetActionArgs<SC>,
-    F extends (state: S, ...args: []) => S ? [string | Error] : GetActionArgs<F>,
-    RS extends (state: S, ...args: []) => S ? [] : GetActionArgs<RS>
-    > {
+    GetActionArgs<F, [string | Error]>,
+    GetActionArgs<RS>
+  > {
     return {
       type: 'api',
       request: (state) => {
@@ -45,28 +47,28 @@ export function makeCommunicationHandler<Params = []>() {
 
         return { ...state, ...newCommunication };
       },
-      success: (state, ...args) => {
+      success: (state, payload?) => {
         const newCommunication = { [communication]: { isRequesting: false } };
 
         return onSuccess
-          ? { ...onSuccess(state, ...args), ...newCommunication }
+          ? { ...onSuccess(state, payload as never), ...newCommunication }
           : { ...state, ...newCommunication };
       },
-      failure: (state, ...args) => {
+      failure: (state, payload?) => {
         const newCommunication = {
           [communication]: {
             ...state[communication],
-            error: args[0] || args,
+            error: payload,
             isRequesting: false,
           },
         };
 
         return onFailure
-          ? { ...onFailure(state, ...args), ...newCommunication }
+          ? { ...onFailure(state, payload as never), ...newCommunication }
           : { ...state, ...newCommunication };
       },
-      reset: (state, ...args) => (onReset
-        ? ({ ...onReset(state, ...args), [communication]: initialCommunication })
+      reset: (state, payload?) => (onReset
+        ? ({ ...onReset(state, payload as never), [communication]: initialCommunication })
         : ({ ...state, [communication]: initialCommunication })),
     };
   };
