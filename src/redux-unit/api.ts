@@ -5,7 +5,6 @@ import {
 } from './types';
 import { TypeFormatter } from './makeTypeFormatter';
 import { makeActionCreator } from './makeActionCreator';
-import { pipe } from './pipe';
 
 type ApiActionsMap<T = string> = {
   request: T;
@@ -18,15 +17,15 @@ type ResolveUndefined<T> = T extends Function ? T : never;
 
 export type ApiActionCreator<S, M extends GenericApiHandler<S>> =
   {
-    getType: (key: keyof ApiActionsMap) => string,
-    mapDispatch: (dispatch: Dispatch<any>) => Omit<ApiActionCreator<S, M>, 'mapDispatch'>,
+    getType: (key: keyof ApiActionsMap) => string;
+    mapDispatch: (dispatch: Dispatch<any>) => Omit<ApiActionCreator<S, M>, 'mapDispatch'>;
     request: (...args: GetActionArgs<M['request']>) =>
-    AnyAction<GetActionArgs<M['request']>>,
-    success: (...args: GetActionArgs<M['success']>) => AnyAction<GetActionArgs<M['success']>>,
+    AnyAction<GetActionArgs<M['request']>>;
+    success: (...args: GetActionArgs<M['success']>) => AnyAction<GetActionArgs<M['success']>>;
     failure: (...args: GetActionArgs<ResolveUndefined<M['failure']>>) =>
-    AnyAction<GetActionArgs<ResolveUndefined<M['failure']>>>,
+    AnyAction<GetActionArgs<ResolveUndefined<M['failure']>>>;
     reset: (...args: GetActionArgs<ResolveUndefined<M['reset']>>) =>
-    AnyAction<GetActionArgs<ResolveUndefined<M['reset']>>>,
+    AnyAction<GetActionArgs<ResolveUndefined<M['reset']>>>;
   };
 
 export type ApiHandler<
@@ -62,16 +61,16 @@ export function getApiActionCreators(key: string, typeFormatter: TypeFormatter) 
     getType: (actionType: keyof ApiActionsMap) => types[actionType] as string,
     mapDispatch: dispatch ? undefined : (reduxDispatch: Dispatch) => getActions(reduxDispatch),
     request: dispatch
-      ? pipe(makeActionCreator(request), dispatch)
+      ? (...args: any) => dispatch(makeActionCreator(request)(...args))
       : makeActionCreator(request),
     success: dispatch
-      ? pipe(makeActionCreator(success), dispatch)
+      ? (...args: any) => dispatch(makeActionCreator(success)(...args))
       : makeActionCreator(success),
     failure: dispatch
-      ? pipe(makeActionCreator(failure), dispatch)
+      ? (...args: any) => dispatch(makeActionCreator(failure)(...args))
       : makeActionCreator(failure),
     reset: dispatch
-      ? pipe(makeActionCreator(reset), dispatch)
+      ? (...args: any) => dispatch(makeActionCreator(reset)(...args))
       : makeActionCreator(reset),
   });
 

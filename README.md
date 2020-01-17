@@ -13,10 +13,15 @@ const unit = reduxUnit(initialState, {
 });
 
 const { actions, reducer } = unit({
-  add: (state, todo: string) => ({ ...state, todos: state.todos.concat(todo) }),
+  plainAction: identity,
+  add: (state, todo: string) => ({ ...state, savedTodos: state.savedTodos.concat(todo) }),
+  repeat: (state, todo: string, count: number) => ({
+    ...state,
+    savedTodos: state.savedTodos.concat(todo.repeat(count))
+  }),
   getTodo: makeCommunicationHandler<Date>()({
-    communication: 'getTodo',
-    onSuccess: (state, todos: string[]) => ({ ...state, todos }),
+    field: 'getTodo',
+    onSuccess: (dataState, todos: string[]) => ({ ...dataState, todos }),
   }),
 });
 ```

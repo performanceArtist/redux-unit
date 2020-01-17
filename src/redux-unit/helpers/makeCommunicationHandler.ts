@@ -2,74 +2,89 @@ import { ApiHandler } from '../index';
 import { GetActionArgs } from '../types';
 import { initialCommunication, Communication } from './communication';
 
-type SubType<Base, Condition> = Pick<Base, {
-  [Key in keyof Base]: Base[Key] extends Condition ? Key : never
-}[keyof Base]>;
+export type WithCommunication<K extends string = string> = {
+  communication: Record<K, Communication>;
+  data?: object;
+};
+export type KeyOfString<T extends object> =Extract<keyof T, string>;
+type FixedHandler<S> = (state: S, payload: never) => S;
 
-type FixedHandler<S extends object> = (state: S, payload: never) => S;
-
-export function makeCommunicationHandler<Params = []>() {
+export function makeCommunicationHandler<Params extends object = []>() {
   return function requestCommunicationHandler
   <
-    S extends object,
-    SC extends FixedHandler<S>,
-    F extends FixedHandler<S>,
-    RS extends FixedHandler<S>,
-  >
-  ({
-    communication,
+    S extends WithCommunication<KeyOfString<S['communication']>>,
+    SC extends FixedHandler<S['data']>,
+    F extends FixedHandler<S['data']>,
+    RS extends FixedHandler<S['data']>,
+  >({
+    field,
     onSuccess,
     onFailure,
     onReset,
   }: {
-    communication: keyof SubType<S, Communication>,
-    onSuccess?: SC,
-    onFailure?: F,
-    onReset?: RS
+    field: KeyOfString<S['communication']>;
+    onSuccess?: SC;
+    onFailure?: F;
+    onReset?: RS;
   }):
-  ApiHandler<
+    ApiHandler<
     S,
     Params extends unknown[] ? Params : [Params],
     GetActionArgs<SC>,
     GetActionArgs<F, [string | Error]>,
     GetActionArgs<RS>
-  > {
+    > {
     return {
       type: 'api',
-      request: (state) => {
+      request: state => {
         const newCommunication = {
-          [communication]: {
-            ...state[communication],
+          ...state.communication,
+          [field]: {
             isRequesting: true,
-            error: undefined,
           },
         };
 
-        return { ...state, ...newCommunication };
+        return {
+          ...state,
+          communication: newCommunication,
+        };
       },
       success: (state, payload?) => {
-        const newCommunication = { [communication]: { isRequesting: false } };
+        const newCommunication = {
+          ...state.communication,
+          [field]: { isRequesting: false },
+        };
+        const newData = onSuccess
+          ? onSuccess(state.data, payload as never)
+          : state.data;
 
-        return onSuccess
-          ? { ...onSuccess(state, payload as never), ...newCommunication }
-          : { ...state, ...newCommunication };
+        return { ...state, data: newData, communication: newCommunication };
       },
       failure: (state, payload?) => {
         const newCommunication = {
-          [communication]: {
-            ...state[communication],
-            error: payload,
+          ...state.communication,
+          [field]: {
+            error: payload || 'Error',
             isRequesting: false,
           },
         };
+        const newData = onFailure
+          ? onFailure(state.data, payload as never)
+          : state.data;
 
-        return onFailure
-          ? { ...onFailure(state, payload as never), ...newCommunication }
-          : { ...state, ...newCommunication };
+        return { ...state, data: newData, communication: newCommunication };
       },
-      reset: (state, payload?) => (onReset
-        ? ({ ...onReset(state, payload as never), [communication]: initialCommunication })
-        : ({ ...state, [communication]: initialCommunication })),
+      reset: (state, payload?) => {
+        const newCommunication = {
+          ...state.communication,
+          [field]: initialCommunication,
+        };
+        const newData = onReset
+          ? onReset(state.data, payload as never)
+          : state.data;
+
+        return { ...state, data: newData, communication: newCommunication };
+      },
     };
   };
 }

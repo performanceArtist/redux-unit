@@ -10,13 +10,16 @@ const bunch = {
   tt: (state: InitialState, a: number) => state,
   bb: (state: InitialState, j: string) => state,
 };
-const onGetSuccess = (state: InitialState, j: number) => state;
+const onGetSuccess = (dataState: InitialState['data'], j: number) => dataState;
 
 const { actions, reducer } = unit({
-  addMessage: (state, todo: string) => ({ ...state, messages: state.todos.concat(todo) }),
+  addMessage: (state, todo: string) => ({
+    ...state,
+    messages: state.savedTodos.concat(todo)
+  }),
   kokoko,
   comm: makeCommunicationHandler()({
-    communication: 'getTodo',
+    field: 'getTodo',
     onSuccess: onGetSuccess,
   }),
   ...bunch,

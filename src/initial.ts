@@ -1,11 +1,21 @@
 import { initialCommunication, Communication } from './redux-unit/helpers';
 
 export type InitialState = {
-  todos: string[],
-  getTodo: Communication
+  savedTodos: string[];
+  communication: {
+    getTodo: Communication
+  },
+  data: {
+    todos: string[],
+  }
 }
 
 export const initialState: InitialState = {
-  todos: [],
-  getTodo: initialCommunication,
+  savedTodos: [],
+  communication: {
+    getTodo: initialCommunication
+  },
+  data: {
+    todos: []
+  }
 };

@@ -12,6 +12,7 @@ const plainType = todoActions.add.getType();
 const requestType = todoActions.getTodo.getType('request');
 console.log('Raw types:', plainType, requestType);
 
+store.dispatch(todoActions.plainAction());
 store.dispatch(add);
 store.dispatch(repeatAdd);
 store.dispatch(getRequest);
