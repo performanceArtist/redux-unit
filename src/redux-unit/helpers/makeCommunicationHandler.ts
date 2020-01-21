@@ -9,7 +9,7 @@ export type WithCommunication<K extends string = string> = {
 export type KeyOfString<T extends object> =Extract<keyof T, string>;
 type FixedHandler<S> = (state: S, payload: never) => S;
 
-export function makeCommunicationHandler<Params extends object = []>() {
+function makeCommunicationHandler<Params extends object = []>() {
   return function requestCommunicationHandler
   <
     S extends WithCommunication<KeyOfString<S['communication']>>,
@@ -88,3 +88,5 @@ export function makeCommunicationHandler<Params extends object = []>() {
     };
   };
 }
+
+export { makeCommunicationHandler, makeCommunicationHandler as api };

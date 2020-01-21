@@ -19,7 +19,7 @@ const { actions, reducer } = unit({
     ...state,
     savedTodos: state.savedTodos.concat(todo.repeat(count))
   }),
-  getTodo: makeCommunicationHandler<Date>()({
+  getTodo: api<Date>()({
     field: 'getTodo',
     onSuccess: (dataState, todos: string[]) => ({ ...dataState, todos }),
   }),

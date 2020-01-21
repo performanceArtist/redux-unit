@@ -1,5 +1,5 @@
 import { reduxUnit } from './redux-unit';
-import { makeCommunicationHandler, identity } from './redux-unit/helpers';
+import { api, identity } from './redux-unit/helpers';
 
 import { initialState } from './initial';
 
@@ -16,7 +16,7 @@ const { actions, reducer } = unit({
     ...state,
     savedTodos: state.savedTodos.concat(todo.repeat(count))
   }),
-  getTodo: makeCommunicationHandler<Date>()({
+  getTodo: api<Date>()({
     field: 'getTodo',
     onSuccess: (dataState, todos: string[]) => ({ ...dataState, todos }),
   }),

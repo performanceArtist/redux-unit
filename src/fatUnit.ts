@@ -1,5 +1,5 @@
 import { reduxUnit } from './redux-unit';
-import { makeCommunicationHandler } from './redux-unit/helpers';
+import { api } from './redux-unit/helpers';
 
 import { initialState, InitialState } from './initial';
 
@@ -18,7 +18,7 @@ const { actions, reducer } = unit({
     messages: state.savedTodos.concat(todo)
   }),
   kokoko,
-  comm: makeCommunicationHandler()({
+  comm: api()({
     field: 'getTodo',
     onSuccess: onGetSuccess,
   }),
