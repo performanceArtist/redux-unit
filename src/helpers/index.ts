@@ -1,2 +1,2 @@
-export * from './makeCommunicationHandler';
+export * from './createApiHandler';
 export * from './communication';

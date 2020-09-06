@@ -1,6 +1,6 @@
 import { ApiHandler } from '../index';
 import { GetActionArgs } from '../api';
-import { initialCommunication, Communication } from './communication';
+import { communication, Communication } from './communication';
 
 export type WithCommunication<K extends string = string> = {
   communication: Record<K, Communication>;
@@ -32,63 +32,66 @@ export function createApiHandler<Params extends object = []>() {
     S,
     Params extends unknown[] ? Params : [Params],
     GetActionArgs<SC>,
-    GetActionArgs<F, [string | Error]>,
+    GetActionArgs<F, [Error]>,
     GetActionArgs<RS>
   > {
     return {
       type: 'api',
       request: (state, payload?) => {
-        const newCommunication = {
-          ...state.communication,
-          [field]: {
-            isRequesting: true,
-          },
-        };
         const newData = onRequest
           ? onRequest(state.data, payload as never)
           : state.data;
 
         return {
           ...state,
-          communication: newCommunication,
+          communication: {
+            ...state.communication,
+            [field]: communication.pending,
+          },
           data: newData,
         };
       },
       success: (state, payload?) => {
-        const newCommunication = {
-          ...state.communication,
-          [field]: { isRequesting: false },
-        };
         const newData = onSuccess
           ? onSuccess(state.data, payload as never)
           : state.data;
 
-        return { ...state, data: newData, communication: newCommunication };
-      },
-      failure: (state, payload?) => {
-        const newCommunication = {
-          ...state.communication,
-          [field]: {
-            error: payload || 'Error',
-            isRequesting: false,
+        return {
+          ...state,
+          data: newData,
+          communication: {
+            ...state.communication,
+            [field]: communication.success,
           },
         };
+      },
+      failure: (state, payload?) => {
         const newData = onFailure
           ? onFailure(state.data, payload as never)
           : state.data;
 
-        return { ...state, data: newData, communication: newCommunication };
+        return {
+          ...state,
+          data: newData,
+          communication: {
+            ...state.communication,
+            [field]: communication.error(payload || new Error('Unknown error')),
+          },
+        };
       },
       reset: (state, payload?) => {
-        const newCommunication = {
-          ...state.communication,
-          [field]: initialCommunication,
-        };
         const newData = onReset
           ? onReset(state.data, payload as never)
           : state.data;
 
-        return { ...state, data: newData, communication: newCommunication };
+        return {
+          ...state,
+          data: newData,
+          communication: {
+            ...state.communication,
+            [field]: communication.initial,
+          },
+        };
       },
     };
   };

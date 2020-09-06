@@ -1,12 +1,42 @@
-export type Communication = {
-  isRequesting: boolean;
-  error?: string;
+export type Initial = {
+  type: 'initial';
 };
 
-export const initialCommunication: Communication = {
-  isRequesting: false,
+export type Pending = {
+  type: 'pending';
 };
 
-export function isCompletedComm(prev: Communication, next: Communication): boolean {
-  return prev.isRequesting && !next.isRequesting && !next.error;
-}
+export type Success = {
+  type: 'success';
+};
+
+export type CommuncationError = {
+  type: 'error';
+  value: Error;
+};
+
+const initial: Communication = {
+  type: 'initial',
+};
+
+const error = (error: Error): Communication => ({
+  type: 'error',
+  value: error,
+});
+
+const success: Communication = {
+  type: 'success',
+};
+
+const pending: Communication = {
+  type: 'pending',
+};
+
+export type Communication = Initial | Pending | Success | CommuncationError;
+
+export const communication = {
+  initial,
+  error,
+  success,
+  pending,
+};
