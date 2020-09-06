@@ -55,13 +55,12 @@ export function createApiHandler<Params extends object = []>() {
         return {
           ...state,
           communication: {
-            ...state.communication,
+            data: newData,
             status: {
               ...state.communication.status,
               [field]: communication.pending,
             },
           },
-          data: newData,
         };
       },
       success: (state, payload?) => {
@@ -71,9 +70,8 @@ export function createApiHandler<Params extends object = []>() {
 
         return {
           ...state,
-          data: newData,
           communication: {
-            ...state.communication,
+            data: newData,
             status: {
               ...state.communication.status,
               [field]: communication.success,
@@ -88,9 +86,8 @@ export function createApiHandler<Params extends object = []>() {
 
         return {
           ...state,
-          data: newData,
           communication: {
-            ...state.communication,
+            data: newData,
             status: {
               ...state.communication.status,
               [field]: communication.error(
@@ -107,9 +104,8 @@ export function createApiHandler<Params extends object = []>() {
 
         return {
           ...state,
-          data: newData,
           communication: {
-            ...state.communication,
+            data: newData,
             status: {
               ...state.communication.status,
               [field]: communication.initial,
