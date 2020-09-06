@@ -1,52 +1,57 @@
 import { ApiHandler } from '../index';
-import { GetActionArgs } from '../types';
+import { GetActionArgs } from '../api';
 import { initialCommunication, Communication } from './communication';
 
 export type WithCommunication<K extends string = string> = {
   communication: Record<K, Communication>;
   data?: object;
 };
-export type KeyOfString<T extends object> =Extract<keyof T, string>;
+export type KeyOfString<T extends object> = Extract<keyof T, string>;
 type FixedHandler<S> = (state: S, payload: never) => S;
 
-function makeCommunicationHandler<Params extends object = []>() {
-  return function requestCommunicationHandler
-  <
+export function api<Params extends object = []>() {
+  return function requestCommunicationHandler<
     S extends WithCommunication<KeyOfString<S['communication']>>,
     SC extends FixedHandler<S['data']>,
     F extends FixedHandler<S['data']>,
     RS extends FixedHandler<S['data']>,
+    RQ extends (data: S['data'], payload: Params) => S['data']
   >({
     field,
+    onRequest,
     onSuccess,
     onFailure,
     onReset,
   }: {
     field: KeyOfString<S['communication']>;
+    onRequest?: RQ;
     onSuccess?: SC;
     onFailure?: F;
     onReset?: RS;
-  }):
-    ApiHandler<
+  }): ApiHandler<
     S,
     Params extends unknown[] ? Params : [Params],
     GetActionArgs<SC>,
     GetActionArgs<F, [string | Error]>,
     GetActionArgs<RS>
-    > {
+  > {
     return {
       type: 'api',
-      request: state => {
+      request: (state, payload?) => {
         const newCommunication = {
           ...state.communication,
           [field]: {
             isRequesting: true,
           },
         };
+        const newData = onRequest
+          ? onRequest(state.data, payload as never)
+          : state.data;
 
         return {
           ...state,
           communication: newCommunication,
+          data: newData,
         };
       },
       success: (state, payload?) => {
@@ -88,5 +93,3 @@ function makeCommunicationHandler<Params extends object = []>() {
     };
   };
 }
-
-export { makeCommunicationHandler, makeCommunicationHandler as api };
