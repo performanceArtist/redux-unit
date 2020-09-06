@@ -5,7 +5,7 @@ import { makeAnyReducer } from './reducer';
 
 export const reduxUnit = <S extends object>(
   initialState: S,
-  formatter?: TypeFormatterOptions,
+  formatter?: Partial<TypeFormatterOptions>,
 ) => <M extends HandlerMap<S>>(model: M) => {
   const typeFormatter = makeTypeFormatter(formatter);
 

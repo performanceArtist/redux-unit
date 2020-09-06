@@ -9,8 +9,8 @@ export type WithCommunication<K extends string = string> = {
 export type KeyOfString<T extends object> = Extract<keyof T, string>;
 type FixedHandler<S> = (state: S, payload: never) => S;
 
-export function api<Params extends object = []>() {
-  return function requestCommunicationHandler<
+export function createApiHandler<Params extends object = []>() {
+  return function requestHandler<
     S extends WithCommunication<KeyOfString<S['communication']>>,
     SC extends FixedHandler<S['data']>,
     F extends FixedHandler<S['data']>,

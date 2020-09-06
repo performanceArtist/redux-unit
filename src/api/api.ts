@@ -43,10 +43,10 @@ export type ApiActionCreator<S, M extends AnyApiHandler<S>> = {
 
 export type ApiHandler<
   S,
-  R extends unknown[] = unknown[],
-  SC extends unknown[] = unknown[],
-  F extends unknown[] = unknown[],
-  RS extends unknown[] = unknown[]
+  R extends any[] = any[],
+  SC extends any[] = any[],
+  F extends any[] = any[],
+  RS extends any[] = any[]
 > = {
   request: Handler<S, R>;
   success: Handler<S, SC>;

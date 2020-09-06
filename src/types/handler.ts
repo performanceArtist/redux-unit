@@ -1,6 +1,6 @@
 import { ApiHandler } from '../api';
 
-export type AnyHandler<S> = (state: S, ...args: unknown[]) => S;
+export type AnyHandler<S> = (state: S, ...args: any[]) => S;
 
 export type Handler<S, A extends unknown[]> = (state: S, ...args: A) => S;
 

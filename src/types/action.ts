@@ -4,7 +4,7 @@ export type PlainAction = {
 
 export type PayloadAction<P> = {
   type: string;
-  payload: P extends [any] ? P[0] : P;
+  payload: P extends [infer A] ? A : P;
 };
 
 export type Action<P> = PlainAction | PayloadAction<P>;
